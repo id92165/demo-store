@@ -1,5 +1,5 @@
-from app.database import AsyncSessionLocal
-from app.models import Product
+from database import AsyncSessionLocal
+from models import Product
 from sqlalchemy import select
 
 async def get_product(product_id: int):

@@ -1,6 +1,6 @@
 import asyncio
-from app.database import engine, Base, AsyncSessionLocal
-from app.models import Product, Inventory, Review
+from database import engine, Base, AsyncSessionLocal
+from models import Product, Inventory, Review
 
 async def seed():
     async with engine.begin() as conn:

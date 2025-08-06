@@ -1,5 +1,5 @@
-from app.database import AsyncSessionLocal
-from app.models import Inventory
+from database import AsyncSessionLocal
+from models import Inventory
 from sqlalchemy import select
 
 async def get_inventory(product_id: int):

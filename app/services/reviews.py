@@ -1,5 +1,5 @@
-from app.database import AsyncSessionLocal
-from app.models import Review
+from database import AsyncSessionLocal
+from models import Review
 from sqlalchemy import select
 
 async def get_reviews(product_id: int):
