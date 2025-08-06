@@ -5,6 +5,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app ./app
+COPY app /app
 
-CMD ["sh", "-c", "python app/seed.py && uvicorn app.main:app --host 0.0.0.0 --port 8050 --reload"]
+CMD ["sh", "-c", "python seed.py && uvicorn main:app --host 0.0.0.0 --port 8050 --reload"]
