@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Grocery Store</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    h1 { text-align: center; }
+    .grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1em;
+      width: 200px;
+      text-align: center;
+      text-decoration: none;
+      color: black;
+    }
+    .card img {
+      max-width: 100%;
+      height: auto;
+    }
+    .card:hover {
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <h1>Grocery Products</h1>
+  <div id="product-grid" class="grid"></div>
+
+  <script>
+    async function loadProducts() {
+      const res = await fetch('/product/');
+      const data = await res.json();
+      const grid = document.getElementById('product-grid');
+      data.forEach(p => {
+        const link = document.createElement('a');
+        link.href = `/frontend/product.html?id=${p.id}`;
+        link.className = 'card';
+        link.innerHTML = `
+          <img src="/frontend/images/${p.name.toLowerCase()}.jpg" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p>${p.category}</p>
+        `;
+        grid.appendChild(link);
+      });
+    }
+    loadProducts();
+  </script>
+</body>
+</html>

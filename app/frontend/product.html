@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Details</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    .container { max-width: 600px; margin: auto; }
+    img { max-width: 100%; border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1em; }
+    td, th { border: 1px solid #ccc; padding: 8px; }
+    th { background: #f0f0f0; text-align: left; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/frontend/index.html">← Back to list</a>
+    <h1 id="name"></h1>
+    <img id="product-img" src="" alt="">
+    <table id="product-table"></table>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+
+    async function loadProduct() {
+      const res = await fetch(`/product/${id}/full`);
+      const data = await res.json();
+
+      document.getElementById('name').textContent = data.product.name;
+      document.getElementById('product-img').src = `/frontend/images/${data.product.name.toLowerCase()}.jpg`;
+
+      const table = document.getElementById('product-table');
+      table.innerHTML = `
+        <tr><th>Category</th><td>${data.product.category}</td></tr>
+        <tr><th>Price</th><td>$${data.product.price}</td></tr>
+        <tr><th>Store</th><td>${data.inventory?.store || 'N/A'}</td></tr>
+        <tr><th>Stock</th><td>${data.inventory?.in_stock || 0}</td></tr>
+        <tr><th>Average Rating</th><td>${data.summary.average_rating || 'No rating'}</td></tr>
+        <tr><th>Review Count</th><td>${data.summary.review_count}</td></tr>
+        <tr><th>Availability</th><td>${data.summary.availability}</td></tr>
+        <tr><th>Current Time</th><td>${data.external_time_api.datetime}</td></tr>
+      `;
+    }
+
+    loadProduct();
+  </script>
+</body>
+</html>
