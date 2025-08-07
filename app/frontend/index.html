@@ -4,24 +4,81 @@
   <meta charset="UTF-8">
   <title>Grocery Store</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 2em; }
-    h1 { text-align: center; }
-    .grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 2em;
+      background: linear-gradient(135deg, #e9f5e1 0%, #f7ecd0 100%);
+      min-height: 100vh;
+    }
+    h1 {
+      text-align: center;
+      color: #4e7c2c;
+      font-family: 'Merriweather', serif;
+      font-size: 2.5em;
+      margin-bottom: 1em;
+      text-shadow: 1px 2px 0 #d6c7a1;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      justify-content: center;
+    }
     .card {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 1em;
-      width: 200px;
+      border: 2px solid #bfa76f;
+      border-radius: 16px;
+      padding: 1.2em 1em 1em 1em;
+      width: 220px;
       text-align: center;
       text-decoration: none;
-      color: black;
+      color: #3d2c0f;
+      background: #fffbe9;
+      box-shadow: 0 2px 8px rgba(78,124,44,0.08);
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .card img {
       max-width: 100%;
-      height: auto;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 0.5em;
+      border-radius: 8px;
+      border: 1px solid #e2d3b2;
+      background: #f2f7e1;
     }
     .card:hover {
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 24px rgba(78,124,44,0.18);
+      transform: translateY(-4px) scale(1.03);
+      border-color: #4e7c2c;
+    }
+    .card::after {
+      content: "🌱";
+      position: absolute;
+      top: 10px;
+      right: 16px;
+      font-size: 1.3em;
+      opacity: 0.7;
+    }
+    .card h3 {
+      margin: 0.3em 0 0.2em 0;
+      font-family: 'Merriweather', serif;
+      color: #4e7c2c;
+      font-size: 1.3em;
+    }
+    .card p {
+      margin: 0.2em 0;
+    }
+    .card .category {
+      font-weight: bold;
+      color: #bfa76f;
+      font-size: 1em;
+      letter-spacing: 0.5px;
+    }
+    .card .price {
+      color: #4e7c2c;
+      font-size: 1.1em;
+      font-weight: bold;
+      margin-top: 0.2em;
     }
   </style>
 </head>
@@ -31,17 +88,21 @@
 
   <script>
     async function loadProducts() {
-      const res = await fetch('/product/');
+      const res = await fetch('/products');
       const data = await res.json();
       const grid = document.getElementById('product-grid');
+      grid.innerHTML = '';
       data.forEach(p => {
         const link = document.createElement('a');
         link.href = `/frontend/product.html?id=${p.id}`;
         link.className = 'card';
+        let imgName = p.name.toLowerCase();
+        // fallback to default image if not found
         link.innerHTML = `
-          <img src="/frontend/images/${p.name.toLowerCase()}.jpg" alt="${p.name}">
+          <img src="/frontend/images/${imgName}.jpg" alt="${p.name}" onerror="this.onerror=null;this.src='/frontend/images/default.jpg';">
           <h3>${p.name}</h3>
-          <p>${p.category}</p>
+          <p class="category">${p.category}</p>
+          <p class="price">${p.price} $</p>
         `;
         grid.appendChild(link);
       });
