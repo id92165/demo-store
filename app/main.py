@@ -9,7 +9,7 @@ app = FastAPI()
 
 
 app.include_router(product_router)
-app.include_router(aggregator_router)
+app.include_router(aggregator_router, prefix="/product")
 
 
 frontend_path = os.path.join(os.path.dirname(__file__), "frontend")
