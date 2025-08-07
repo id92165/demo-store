@@ -83,7 +83,7 @@
     const id = urlParams.get('id');
 
     async function loadProduct() {
-      const res = await fetch(`/product/${id}/full`);
+      const res = await fetch(`/${id}/full`);
       const data = await res.json();
 
       document.getElementById('name').textContent = data.product.name;
