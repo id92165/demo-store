@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from database import create_tables
-from services.products import router as product_router
+from services.product import router as product_router
 import os
 
 app = FastAPI()
@@ -14,5 +14,5 @@ app.mount("/frontend", StaticFiles(directory=frontend_path, html=True), name="fr
 
 
 @app.on_event("startup")
-def startup():
-    create_tables()
+async def startup():
+    await create_tables()
