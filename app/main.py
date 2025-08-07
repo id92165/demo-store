@@ -2,11 +2,14 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from database import create_tables
 from services.product import router as product_router
+from services.aggregator import router as aggregator_router
 import os
 
 app = FastAPI()
 
+
 app.include_router(product_router)
+app.include_router(aggregator_router)
 
 
 frontend_path = os.path.join(os.path.dirname(__file__), "frontend")
