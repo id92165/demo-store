@@ -93,6 +93,7 @@
       table.innerHTML = `
         <tr><th>Category</th><td>${data.product.category}</td></tr>
         <tr><th>Price</th><td>$${data.product.price}</td></tr>
+        <tr><th>Price in euro</th><td>€${data.product.price_eur ?? 'N/A'}</td></tr>
         <tr><th>Store</th><td>${data.inventory?.store || 'N/A'}</td></tr>
         <tr><th>Stock</th><td>${data.inventory?.in_stock || 0}</td></tr>
         <tr><th>Average Rating</th><td>${data.summary.average_rating || 'No rating'}</td></tr>

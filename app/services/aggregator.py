@@ -3,6 +3,7 @@ from services.product import get_product, list_products
 from services.inventory import get_inventory
 from services.reviews import get_reviews
 from services.timeapi import fetch_current_time
+from services.currency import fetch_usd_to_eur
 
 router = APIRouter()
 
@@ -27,6 +28,8 @@ async def get_full_product(product_id: int):
     inventory = await get_inventory(product_id)
     reviews = await get_reviews(product_id)
     external_time = await fetch_current_time()
+    rate = await fetch_usd_to_eur()
+    price_eur = round(product.price * rate, 2) if rate else None
 
     avg_rating = round(sum(r.rating for r in reviews) / len(reviews), 1) if reviews else None
 
@@ -36,7 +39,8 @@ async def get_full_product(product_id: int):
             "id": product.id,
             "name": product.name,
             "category": product.category,
-            "price": product.price
+            "price": product.price,
+            "price_eur": price_eur
         },
         "inventory": {
             "store": inventory.store,
