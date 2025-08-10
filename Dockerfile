@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app /app
 
-CMD ["sh", "-c", "python seed.py && uvicorn main:app --host 0.0.0.0 --port 8050 --reload"]
+CMD ["sh", "-c", "python seed.py && uvicorn main:app --host 0.0.0.0 --port 9000 --reload"]

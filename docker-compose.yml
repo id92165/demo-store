@@ -4,7 +4,7 @@ services:
   grocery_api:
     build: .
     ports:
-      - "8050:8050"
+      - "9000:9000"
     volumes:
       - ./app:/app
     restart: unless-stopped
