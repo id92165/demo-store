@@ -38,6 +38,49 @@
       display: block;
       margin: 0 auto 1.2em auto;
       max-width: 340px;
+    }
+    .loading {
+      text-align: center;
+      color: #888;
+      font-size: 1.2em;
+      margin-top: 2em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html">← Back to products</a>
+    <div id="product-details"></div>
+    <div id="loading" class="loading">Loading product...</div>
+  </div>
+  <script>
+    function getProductId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+    async function loadProduct() {
+      const productId = getProductId();
+      const detailsDiv = document.getElementById('product-details');
+      const loadingDiv = document.getElementById('loading');
+      try {
+        const res = await fetch(`/api/products/${productId}`);
+        if (!res.ok) throw new Error('Not found');
+        const product = await res.json();
+        detailsDiv.innerHTML = `
+          <img id="product-img" src="images/${product.image || 'default.jpg'}" alt="${product.name}">
+          <h1>${product.name}</h1>
+          <p><strong>Price:</strong> ${product.price} ${product.currency}</p>
+          <p><strong>Description:</strong> ${product.description || 'No description.'}</p>
+        `;
+        loadingDiv.style.display = 'none';
+      } catch (e) {
+        loadingDiv.textContent = 'Failed to load product.';
+      }
+    }
+    loadProduct();
+  </script>
+</body>
+</html>
       height: 220px;
       object-fit: contain;
       border-radius: 12px;
@@ -83,7 +126,7 @@
     const id = urlParams.get('id');
 
     async function loadProduct() {
-  const res = await fetch(`http://18.195.6.182:8000/product/${id}/full`);
+  const res = await fetch(`/api/products/${id}/full`);
       const data = await res.json();
 
       document.getElementById('name').textContent = data.product.name;

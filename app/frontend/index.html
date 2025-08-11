@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,10 +39,10 @@
       transition: transform 0.2s, box-shadow 0.2s;
     }
     .card img {
-      max-width: 100%;
+      max-width: 120px;
+      margin-bottom: 1em;
       height: 120px;
       object-fit: contain;
-      margin-bottom: 0.5em;
       border-radius: 8px;
       border: 1px solid #e2d3b2;
       background: #f2f7e1;
@@ -80,32 +81,43 @@
       font-weight: bold;
       margin-top: 0.2em;
     }
+    .loading {
+      text-align: center;
+      color: #888;
+      font-size: 1.2em;
+      margin-top: 2em;
+    }
   </style>
 </head>
 <body>
   <h1>Grocery Products</h1>
   <div id="product-grid" class="grid"></div>
-
+  <div id="loading" class="loading">Loading products...</div>
   <script>
     async function loadProducts() {
-  const res = await fetch('http://18.195.6.182:8000/products');
-      const data = await res.json();
       const grid = document.getElementById('product-grid');
-      grid.innerHTML = '';
-      data.forEach(p => {
-        const link = document.createElement('a');
-        link.href = `/frontend/product.html?id=${p.id}`;
-        link.className = 'card';
-        let imgName = p.name.toLowerCase();
-        // fallback to default image if not found
-        link.innerHTML = `
-          <img src="/frontend/images/${imgName}.jpg" alt="${p.name}" onerror="this.onerror=null;this.src='/frontend/images/default.jpg';">
-          <h3>${p.name}</h3>
-          <p class="category">${p.category}</p>
-          <p class="price">${p.price} $</p>
-        `;
-        grid.appendChild(link);
-      });
+      const loadingDiv = document.getElementById('loading');
+      try {
+        const res = await fetch('/api/products');
+        const data = await res.json();
+        grid.innerHTML = '';
+        data.forEach(p => {
+          const link = document.createElement('a');
+          link.href = `product.html?id=${p.id}`;
+          link.className = 'card';
+          let imgName = p.image || p.name.toLowerCase();
+          link.innerHTML = `
+            <img src="images/${imgName}.jpg" alt="${p.name}" onerror="this.onerror=null;this.src='images/default.jpg';">
+            <h3>${p.name}</h3>
+            <p class="category">${p.category || ''}</p>
+            <p class="price">${p.price} ${p.currency || '$'}</p>
+          `;
+          grid.appendChild(link);
+        });
+        loadingDiv.style.display = 'none';
+      } catch (e) {
+        loadingDiv.textContent = 'Failed to load products.';
+      }
     }
     loadProducts();
   </script>
