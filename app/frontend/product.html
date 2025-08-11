@@ -1,166 +1,154 @@
-
-          <h1>${product.name}</h1>
-          <p><strong>Price:</strong> ${product.price} ${product.currency}</p>
-          <p><strong>Description:</strong> ${product.description || 'No description.'}</p>
-        `;
-        loadingDiv.style.display = 'none';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Details</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 2em;
+      background: linear-gradient(135deg, #e9f5e1 0%, #f7ecd0 100%);
+      min-height: 100vh;
+    }
+    h1 {
+      text-align: center;
+      color: #4e7c2c;
+      font-family: 'Merriweather', serif;
+      font-size: 2.5em;
+      margin-bottom: 1em;
+      text-shadow: 1px 2px 0 #d6c7a1;
+    }
+    .card {
+      border: 2px solid #bfa76f;
+      border-radius: 16px;
+      padding: 2em 2em 2em 2em;
+      max-width: 480px;
+      margin: 2em auto;
+      text-align: center;
+      color: #3d2c0f;
+      background: #fffbe9;
+      box-shadow: 0 2px 8px rgba(78,124,44,0.08);
+      position: relative;
+    }
+    .card img {
+      max-width: 320px;
+      height: 220px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 2px solid #e2d3b2;
+      background: #f2f7e1;
+      box-shadow: 0 2px 12px rgba(78,124,44,0.10);
+      margin-bottom: 1em;
+    }
+    .back-link {
+      color: #4e7c2c;
+      text-decoration: none;
+      font-weight: bold;
+      margin-bottom: 1em;
+      display: inline-block;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+      font-size: 1.08em;
+      background: #f7ecd0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 8px rgba(78,124,44,0.07);
+    }
+    .info-table td, .info-table th {
+      border: 1px solid #bfa76f;
+      padding: 10px 12px;
+    }
+    .info-table th {
+      background: #e9f5e1;
+      text-align: left;
+      color: #4e7c2c;
+      font-weight: bold;
+    }
+    .info-table td {
+      color: #3d2c0f;
+    }
+    .loading {
+      text-align: center;
+      color: #888;
+      font-size: 1.2em;
+      margin-top: 2em;
+    }
+  </style>
+</head>
+<body>
+  <a href="/frontend/index.html" class="back-link">← Back to products</a>
+  <div id="product-card" class="card">
+    <div id="loading" class="loading">Loading product...</div>
+  </div>
+  <script>
+    async function fetchProduct(id) {
+      try {
+        const res = await fetch(`/api/products/${id}/full`);
+        if (!res.ok) throw new Error('Not found');
+        return await res.json();
       } catch (e) {
-        loadingDiv.textContent = 'Failed to load product.';
+        return null;
       }
     }
-
-
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <title>Product Details</title>
-      <style>
-        body {
-          font-family: 'Segoe UI', Arial, sans-serif;
-          margin: 2em;
-          background: linear-gradient(135deg, #e9f5e1 0%, #f7ecd0 100%);
-          min-height: 100vh;
-        }
-        h1 {
-          text-align: center;
-          color: #4e7c2c;
-          font-family: 'Merriweather', serif;
-          font-size: 2.5em;
-          margin-bottom: 1em;
-          text-shadow: 1px 2px 0 #d6c7a1;
-        }
-        .card {
-          border: 2px solid #bfa76f;
-          border-radius: 16px;
-          padding: 2em 2em 2em 2em;
-          max-width: 480px;
-          margin: 2em auto;
-          text-align: center;
-          color: #3d2c0f;
-          background: #fffbe9;
-          box-shadow: 0 2px 8px rgba(78,124,44,0.08);
-          position: relative;
-        }
-        .card img {
-          max-width: 320px;
-          height: 220px;
-          object-fit: contain;
-          border-radius: 12px;
-          border: 2px solid #e2d3b2;
-          background: #f2f7e1;
-          box-shadow: 0 2px 12px rgba(78,124,44,0.10);
-          margin-bottom: 1em;
-        }
-        .back-link {
-          color: #4e7c2c;
-          text-decoration: none;
-          font-weight: bold;
-          margin-bottom: 1em;
-          display: inline-block;
-        }
-        .info-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 1em;
-          font-size: 1.08em;
-          background: #f7ecd0;
-          border-radius: 8px;
-          overflow: hidden;
-          box-shadow: 0 1px 8px rgba(78,124,44,0.07);
-        }
-        .info-table td, .info-table th {
-          border: 1px solid #bfa76f;
-          padding: 10px 12px;
-        }
-        .info-table th {
-          background: #e9f5e1;
-          text-align: left;
-          color: #4e7c2c;
-          font-weight: bold;
-        }
-        .info-table td {
-          color: #3d2c0f;
-        }
-        .loading {
-          text-align: center;
-          color: #888;
-          font-size: 1.2em;
-          margin-top: 2em;
-        }
-      </style>
-    </head>
-    <body>
-      <a href="/frontend/index.html" class="back-link">← Back to products</a>
-      <div id="product-card" class="card">
-        <div id="loading" class="loading">Loading product...</div>
-      </div>
-      <script>
-        async function fetchProduct(id) {
-          try {
-            const res = await fetch(`/api/products/${id}/full`);
-            if (!res.ok) throw new Error('Not found');
-            return await res.json();
-          } catch (e) {
-            return null;
-          }
-        }
-        async function fetchRate() {
-          try {
-            const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR');
-            if (!res.ok) return null;
-            const data = await res.json();
-            return data.rates.EUR;
-          } catch (e) {
-            return null;
-          }
-        }
-        async function fetchTime() {
-          try {
-            const res = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
-            if (!res.ok) return null;
-            const data = await res.json();
-            return data.utc_datetime;
-          } catch (e) {
-            return null;
-          }
-        }
-        async function renderProduct() {
-          const params = new URLSearchParams(window.location.search);
-          const id = params.get('id');
-          const card = document.getElementById('product-card');
-          const loadingDiv = document.getElementById('loading');
-          try {
-            const [productData, rate, time] = await Promise.all([
-              fetchProduct(id),
-              fetchRate(),
-              fetchTime()
-            ]);
-            if (!productData) throw new Error('Failed to load product');
-            const p = productData.product;
-            const inventory = productData.inventory || {};
-            const summary = productData.summary || {};
-            const priceEur = rate ? (p.price * rate).toFixed(2) : 'N/A';
-            card.innerHTML = `
-              <img src="/frontend/images/${p.name.toLowerCase()}.jpg" alt="${p.name}" onerror="this.onerror=null;this.src='/frontend/images/default.jpg';">
-              <h1>${p.name}</h1>
-              <table class="info-table">
-                <tr><th>Category</th><td>${p.category}</td></tr>
-                <tr><th>Price</th><td>$${p.price}</td></tr>
-                <tr><th>Price in euro</th><td>€${priceEur}</td></tr>
-                <tr><th>Store</th><td>${inventory.store || 'N/A'}</td></tr>
-                <tr><th>Stock</th><td>${inventory.in_stock || 0}</td></tr>
-                <tr><th>Average Rating</th><td>${summary.average_rating || 'No rating'}</td></tr>
-                <tr><th>Review Count</th><td>${summary.review_count || 0}</td></tr>
-                <tr><th>Availability</th><td>${summary.availability || 'N/A'}</td></tr>
-                <tr><th>Current Time</th><td>${time || 'Failed to fetch time'}</td></tr>
-              </table>
-            `;
-          } catch (e) {
-            card.innerHTML = '<div class="loading">Failed to load product.</div>';
-          }
-        }
-        renderProduct();
-      </script>
-    </body>
-    </html>
+    async function fetchRate() {
+      try {
+        const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR');
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.rates.EUR;
+      } catch (e) {
+        return null;
+      }
+    }
+    async function fetchTime() {
+      try {
+        const res = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.utc_datetime;
+      } catch (e) {
+        return null;
+      }
+    }
+    async function renderProduct() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      const card = document.getElementById('product-card');
+      const loadingDiv = document.getElementById('loading');
+      try {
+        const [productData, rate, time] = await Promise.all([
+          fetchProduct(id),
+          fetchRate(),
+          fetchTime()
+        ]);
+        if (!productData) throw new Error('Failed to load product');
+        const p = productData.product;
+        const inventory = productData.inventory || {};
+        const summary = productData.summary || {};
+        const priceEur = rate ? (p.price * rate).toFixed(2) : 'N/A';
+        card.innerHTML = `
+          <img src="/frontend/images/${p.name.toLowerCase()}.jpg" alt="${p.name}" onerror="this.onerror=null;this.src='/frontend/images/default.jpg';">
+          <h1>${p.name}</h1>
+          <table class="info-table">
+            <tr><th>Category</th><td>${p.category}</td></tr>
+            <tr><th>Price</th><td>$${p.price}</td></tr>
+            <tr><th>Price in euro</th><td>€${priceEur}</td></tr>
+            <tr><th>Store</th><td>${inventory.store || 'N/A'}</td></tr>
+            <tr><th>Stock</th><td>${inventory.in_stock || 0}</td></tr>
+            <tr><th>Average Rating</th><td>${summary.average_rating || 'No rating'}</td></tr>
+            <tr><th>Review Count</th><td>${summary.review_count || 0}</td></tr>
+            <tr><th>Availability</th><td>${summary.availability || 'N/A'}</td></tr>
+            <tr><th>Current Time</th><td>${time || 'Failed to fetch time'}</td></tr>
+          </table>
+        `;
+      } catch (e) {
+        card.innerHTML = '<div class="loading">Failed to load product.</div>';
+      }
+    }
+    renderProduct();
+  </script>
+</body>
+</html>
