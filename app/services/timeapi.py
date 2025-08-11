@@ -1,7 +1,7 @@
 import httpx
 
 async def fetch_current_time():
-    url = "http://worldtimeapi.org/api/timezone/Etc/UTC"
+    url = "https://worldtimeapi.org/api/timezone/Etc/UTC"
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             response = await client.get(url)

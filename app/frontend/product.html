@@ -107,7 +107,7 @@
           return data.rates.EUR;
         }
         async function fetchTime() {
-          const res = await fetch('http://worldtimeapi.org/api/timezone/Etc/UTC');
+          const res = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
           if (!res.ok) return null;
           const data = await res.json();
           return data.utc_datetime;
