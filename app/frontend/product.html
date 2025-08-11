@@ -9,6 +9,7 @@
       }
     }
 
+
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -96,21 +97,33 @@
       </div>
       <script>
         async function fetchProduct(id) {
-          const res = await fetch(`/api/products/${id}/full`);
-          if (!res.ok) throw new Error('Not found');
-          return await res.json();
+          try {
+            const res = await fetch(`/api/products/${id}/full`);
+            if (!res.ok) throw new Error('Not found');
+            return await res.json();
+          } catch (e) {
+            return null;
+          }
         }
         async function fetchRate() {
-          const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR');
-          if (!res.ok) return null;
-          const data = await res.json();
-          return data.rates.EUR;
+          try {
+            const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR');
+            if (!res.ok) return null;
+            const data = await res.json();
+            return data.rates.EUR;
+          } catch (e) {
+            return null;
+          }
         }
         async function fetchTime() {
-          const res = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
-          if (!res.ok) return null;
-          const data = await res.json();
-          return data.utc_datetime;
+          try {
+            const res = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
+            if (!res.ok) return null;
+            const data = await res.json();
+            return data.utc_datetime;
+          } catch (e) {
+            return null;
+          }
         }
         async function renderProduct() {
           const params = new URLSearchParams(window.location.search);
@@ -123,6 +136,7 @@
               fetchRate(),
               fetchTime()
             ]);
+            if (!productData) throw new Error('Failed to load product');
             const p = productData.product;
             const inventory = productData.inventory || {};
             const summary = productData.summary || {};
