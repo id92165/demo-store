@@ -67,7 +67,7 @@
         if (!res.ok) throw new Error('Not found');
         const product = await res.json();
         detailsDiv.innerHTML = `
-          <img id="product-img" src="images/${product.image || 'default.jpg'}" alt="${product.name}">
+          <img id="product-img" src="/frontend/images/${product.image || 'default.jpg'}" alt="${product.name}">
           <h1>${product.name}</h1>
           <p><strong>Price:</strong> ${product.price} ${product.currency}</p>
           <p><strong>Description:</strong> ${product.description || 'No description.'}</p>
@@ -130,7 +130,7 @@
       const data = await res.json();
 
       document.getElementById('name').textContent = data.product.name;
-      document.getElementById('product-img').src = `/frontend/images/${data.product.name.toLowerCase()}.jpg`;
+  document.getElementById('product-img').src = `/frontend/images/${data.product.name.toLowerCase()}.jpg`;
 
       const table = document.getElementById('product-table');
       table.innerHTML = `

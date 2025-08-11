@@ -103,11 +103,11 @@
         grid.innerHTML = '';
         data.forEach(p => {
           const link = document.createElement('a');
-          link.href = `product.html?id=${p.id}`;
+          link.href = `/frontend/product.html?id=${p.id}`;
           link.className = 'card';
           let imgName = p.image || p.name.toLowerCase();
           link.innerHTML = `
-            <img src="images/${imgName}.jpg" alt="${p.name}" onerror="this.onerror=null;this.src='images/default.jpg';">
+            <img src="/frontend/images/${imgName}.jpg" alt="${p.name}" onerror="this.onerror=null;this.src='/frontend/images/default.jpg';">
             <h3>${p.name}</h3>
             <p class="category">${p.category || ''}</p>
             <p class="price">${p.price} ${p.currency || '$'}</p>
