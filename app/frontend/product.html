@@ -76,6 +76,16 @@
       font-size: 1.2em;
       margin-top: 2em;
     }
+    .loading-field {
+      color: #888;
+      font-style: italic;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
   </style>
 </head>
 <body>
@@ -113,40 +123,174 @@
         return null;
       }
     }
+    async function fetchProductCity(productId) {
+      try {
+        const res = await fetch(`/api/product-city?product_id=${productId}`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.city;
+      } catch (e) {
+        return null;
+      }
+    }
+    async function fetchProductPrice(productId) {
+      try {
+        const res = await fetch(`/api/product-price?product_id=${productId}`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.price;
+      } catch (e) {
+        return null;
+      }
+    }
+    async function fetchProductReviewCount(productName) {
+      try {
+        const res = await fetch(`/api/product-review-count?product_name=${encodeURIComponent(productName)}`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.review_count;
+      } catch (e) {
+        return null;
+      }
+    }
+    async function fetchProductAverageRating(productName) {
+      try {
+        const res = await fetch(`/api/product-average-rating?product_name=${encodeURIComponent(productName)}`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.average_rating;
+      } catch (e) {
+        return null;
+      }
+    }
+    async function fetchProductCategory(productId) {
+      try {
+        const res = await fetch(`/api/product-category?product_id=${productId}`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.category;
+      } catch (e) {
+        return null;
+      }
+    }
+    async function fetchProductStock(productId) {
+      try {
+        const res = await fetch(`/api/product-stock?product_id=${productId}`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.stock;
+      } catch (e) {
+        return null;
+      }
+    }
+    async function fetchProductAvailability(productId) {
+      try {
+        const res = await fetch(`/api/product-availability?product_id=${productId}`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.availability;
+      } catch (e) {
+        return null;
+      }
+    }
     async function renderProduct() {
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
       const card = document.getElementById('product-card');
       const loadingDiv = document.getElementById('loading');
+      
       try {
+        // First, load basic product data and show the page immediately
         const [productData, rate, time] = await Promise.all([
           fetchProduct(id),
           fetchRate(),
           fetchTime()
         ]);
         if (!productData) throw new Error('Failed to load product');
+        
         const p = productData.product;
         const inventory = productData.inventory || {};
         const summary = productData.summary || {};
         const priceEur = rate ? (p.price * rate).toFixed(2) : 'N/A';
+        
+        // Show the page immediately with loading states
         card.innerHTML = `
           <img src="/frontend/images/${p.name.toLowerCase()}.jpg" alt="${p.name}" onerror="this.onerror=null;this.src='/frontend/images/default.jpg';">
           <h1>${p.name}</h1>
           <table class="info-table">
-            <tr><th>Category</th><td>${p.category}</td></tr>
-            <tr><th>Price</th><td>$${p.price}</td></tr>
+            <tr><th>Category</th><td id="category-cell" class="loading-field">Loading...</td></tr>
+            <tr><th>Price</th><td id="price-cell" class="loading-field">Loading...</td></tr>
             <tr><th>Price in euro</th><td>€${priceEur}</td></tr>
-            <tr><th>Store</th><td>${inventory.store || 'N/A'}</td></tr>
-            <tr><th>Stock</th><td>${inventory.in_stock || 0}</td></tr>
-            <tr><th>Average Rating</th><td>${summary.average_rating || 'No rating'}</td></tr>
-            <tr><th>Review Count</th><td>${summary.review_count || 0}</td></tr>
-            <tr><th>Availability</th><td>${summary.availability || 'N/A'}</td></tr>
+            <tr><th>Store</th><td id="store-cell" class="loading-field">Loading...</td></tr>
+            <tr><th>Stock</th><td id="stock-cell" class="loading-field">Loading...</td></tr>
+            <tr><th>Average Rating</th><td id="rating-cell" class="loading-field">Loading...</td></tr>
+            <tr><th>Review Count</th><td id="review-count-cell" class="loading-field">Loading...</td></tr>
+            <tr><th>Availability</th><td id="availability-cell" class="loading-field">Loading...</td></tr>
             <tr><th>Current Time</th><td>${time || 'Failed to fetch time'}</td></tr>
           </table>
         `;
+        
+        // Now load API data in parallel and update fields as they complete
+        loadApiData(id, p.name);
+        
       } catch (e) {
         card.innerHTML = '<div class="loading">Failed to load product.</div>';
       }
+    }
+    
+    async function loadApiData(productId, productName) {
+      // Load API data in parallel and update fields individually
+      Promise.all([
+        fetchProductCategory(productId).then(category => {
+          const cell = document.getElementById('category-cell');
+          if (cell) {
+            cell.classList.remove('loading-field');
+            cell.textContent = category || 'N/A';
+          }
+        }),
+        fetchProductPrice(productId).then(price => {
+          const cell = document.getElementById('price-cell');
+          if (cell) {
+            cell.classList.remove('loading-field');
+            cell.textContent = price !== null ? `$${price}` : 'N/A';
+          }
+        }),
+        fetchProductCity(productId).then(city => {
+          const cell = document.getElementById('store-cell');
+          if (cell) {
+            cell.classList.remove('loading-field');
+            cell.textContent = city || 'N/A';
+          }
+        }),
+        fetchProductStock(productId).then(stock => {
+          const cell = document.getElementById('stock-cell');
+          if (cell) {
+            cell.classList.remove('loading-field');
+            cell.textContent = stock !== null ? stock : 0;
+          }
+        }),
+        fetchProductReviewCount(productName).then(count => {
+          const cell = document.getElementById('review-count-cell');
+          if (cell) {
+            cell.classList.remove('loading-field');
+            cell.textContent = count !== null ? count : 0;
+          }
+        }),
+        fetchProductAverageRating(productName).then(rating => {
+          const cell = document.getElementById('rating-cell');
+          if (cell) {
+            cell.classList.remove('loading-field');
+            cell.textContent = rating !== null ? rating : 'No rating';
+          }
+        }),
+        fetchProductAvailability(productId).then(availability => {
+          const cell = document.getElementById('availability-cell');
+          if (cell) {
+            cell.classList.remove('loading-field');
+            cell.textContent = availability || 'N/A';
+          }
+        })
+      ]);
     }
     renderProduct();
   </script>
